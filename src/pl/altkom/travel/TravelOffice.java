@@ -1,68 +1,78 @@
 package pl.altkom.travel;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class TravelOffice {
-    private Customer customers[];
-    private int customersCounter;
-    private int maxSize;
+    private Set<Customer> customers;
+    private Map<String,Trip> trips;
+
 
     public TravelOffice() {
-        maxSize = 2;
-        customers = new Customer[maxSize];
-        customersCounter = 0;
+        customers = new HashSet<>();
+        trips = new HashMap<>();
     }
 
     public void addCustomer(Customer c) {
-        if (customersCounter >= maxSize) {
-            maxSize *= 2;
-            Customer newCustomers[] = new Customer[maxSize];
-            for (int i = 0; i < customers.length; i++) {
-                newCustomers[i] = customers[i];
-            }
-            customers = newCustomers;
+        customers.add(c);
+
+    }
+    public void addTrip(String s, Trip trip){
+        trips.put(s,trip);
+    }
+
+    public boolean removeTrip(String s){
+        if(trips.containsKey(s)){
+            trips.remove(s);
+            return true;
+        } else{
+            return false;
         }
-        customers[customersCounter] = c;
-        customersCounter++;
+
+    }
+    public  boolean removeCustomer(Customer c){
+                return customers.remove(c);
+            }
+
+    public Customer findCustomerByName(String s){
+        for(Customer c:customers){
+            if(c.getName().equals(s)){
+                return c;
+            }
+        }
+        return null;
     }
 
     public int getCustomersCount() {
-        return customersCounter;
+        return customers.size();
     }
 
-//    public String toString() {
-//        String result = "";
-//        for (int i = 0; i < customersCounter; i++) {
-//            result += customers[i].toString() + System.lineSeparator();
-//        }
-//        return result;
-//    }
+    public Set<Customer> getCustomers() {
+        return customers;
+    }
 
+    public Map<String, Trip> getTrips() {
+        return trips;
+    }
 
     @Override
     public String toString() {
         return "TravelOffice{" +
-                "customers=" + Arrays.toString(customers) +
-                ", customersCounter=" + customersCounter +
-                ", maxSize=" + maxSize +
+                "customers=" + customers +
+                ", customersCounter=" + getCustomersCount() +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TravelOffice office = (TravelOffice) o;
-        return customersCounter == office.customersCounter &&
-                maxSize == office.maxSize &&
-                Arrays.equals(customers, office.customers);
+        if (!(o instanceof TravelOffice)) return false;
+        TravelOffice that = (TravelOffice) o;
+        return Objects.equals(customers, that.customers) &&
+                Objects.equals(trips, that.trips);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(customersCounter, maxSize);
-        result = 31 * result + Arrays.hashCode(customers);
-        return result;
+        return Objects.hash(customers, trips);
     }
 }
